@@ -8,6 +8,8 @@ function App() {
   const [count, setCount] = useState(0);
   const [res, setRes] = useState(""); // To store the response
   const [url, setUrl] = useState(""); // To store the URL
+  const [percent,setPercent]=useState("");
+  const [flag,setFlag]=useState("")
 
   // Get the current tab URL when the component mounts
   useEffect(() => {
@@ -37,7 +39,11 @@ function App() {
       );
 
       console.log("Response:", response.data);
-      setRes(JSON.stringify(response.data, null, 2)); // Store response as a formatted string
+
+      setFlag(Object.keys(response.data)[0]); // Store response as a formatted string
+      let r=Object.values(response.data)[0]
+      let s=parseFloat(r)*100
+      setPercent(s.toFixed(2))
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       setRes("Failed to fetch response!");
@@ -46,21 +52,13 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
+
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => sendPredictionRequest(url)}>
           Analyze URL
         </button>
-        <p>Current URL: {url}</p>
-        <pre>{res}</pre>
+        <pre>{flag}{percent}</pre>
       </div>
     </>
   );
