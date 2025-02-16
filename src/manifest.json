@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "NewsFact",
     "version": "1.0",
-    "description": "A simple Chrome extension using Vite and React",
+    "description": "checking whether information is misleading or not",
     "action": {
       "default_popup":"index.html"
     },
