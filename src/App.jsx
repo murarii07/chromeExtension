@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Shield, ExternalLink, RefreshCw } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { ExternalLink, RefreshCw } from "lucide-react";
 
 const App = () => {
   const [url, setUrl] = useState("");
@@ -7,13 +7,14 @@ const App = () => {
   const [percent, setPercent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [start, setStart] = useState(0);
 
   useEffect(() => {
     sendPredictionRequest(url);
   }, [url]);
 
   useEffect(() => {
-    if (typeof chrome !== 'undefined' && chrome.tabs) {
+    if (typeof chrome !== "undefined" && chrome.tabs) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length > 0) {
           setUrl(tabs[0].url);
@@ -29,18 +30,19 @@ const App = () => {
       setIsLoading(true);
       return;
     }
-
     setIsLoading(true);
     setError("");
-
     try {
-      const response = await fetch("https://6e4c-103-14-233-220.ngrok-free.app/news", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url }),
-      });
+      const response = await fetch(
+        "https://16e5-103-14-233-220.ngrok-free.app/news",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,25 +63,38 @@ const App = () => {
   const getStatusInfo = () => {
     if (!flag || !percent) return null;
 
-    if (flag.toLowerCase() === 'false') {
+    if (flag.toLowerCase() === "false") {
       return {
-        color: 'bg-red-200',
-        textColor: 'text-red-900',
-        title: '⚠️ Potentially Fake Content',
+        color: "bg-red-200",
+        textColor: "text-red-900",
+        title: "⚠️ Potentially Fake Content",
         description: `Confidence: ${percent}%`,
       };
     }
 
     return {
-      color: 'bg-green-200',
-      textColor: 'text-green-900',
-      title: '✅ Real Content',
+      color: "bg-green-200",
+      textColor: "text-green-900",
+      title: "✅ Real Content",
       description: `Confidence: ${percent}%`,
     };
   };
 
   const statusInfo = getStatusInfo();
-
+  useEffect(() => {
+    if (percent) {
+      setTimeout(() => {
+        setStart(1);
+      }, 500);
+    }
+  }, [percent]);
+  useEffect(() => {
+    if (start >= 1 && start<=parseInt(percent)) {
+      setTimeout(() => {
+        setStart(s=>s+1);
+      }, 10);
+    }
+  }, [start]);
   return (
     <div className="w-[350px] bg-white shadow-lg rounded-xl font-sans p-5 flex flex-col space-y-6">
       <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
@@ -90,12 +105,12 @@ const App = () => {
 
       <div className="mt-3 flex items-center bg-gray-100 p-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-out">
         <div className="text-sm text-gray-700 truncate flex-1" title={url}>
-          {url || 'No URL detected'}
+          {url || "No URL detected"}
         </div>
         <ExternalLink className="h-5 w-5 text-gray-500 hover:text-blue-500 cursor-pointer transition-all duration-300 ease-out" />
       </div>
 
-      {(!url || typeof chrome === 'undefined') && (
+      {(!url || typeof chrome === "undefined") && (
         <input
           type="text"
           value={url}
@@ -130,10 +145,12 @@ const App = () => {
                   <div
                     className="h-3 rounded-full transition-all duration-1000 ease-out"
                     style={{
-                      width: `${percent}%`,
-                      backgroundColor: flag.toLowerCase() === 'false' ? '#ef4444' : '#22c55e',
+                      width: `${start}%`,
+                      backgroundColor:
+                        flag.toLowerCase() === "false" ? "#ef4444" : "#22c55e",
                     }}
                   />
+                  {/* <LoadingBar percentage={percent} color={flag.toLowerCase() === "false" ? "#ef4444" : "#22c55e"} /> */}
                 </div>
               </div>
             </div>
