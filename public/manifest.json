@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Vite React Chrome Extension",
+    "name": "NewsFact",
     "version": "1.0",
     "description": "A simple Chrome extension using Vite and React",
     "action": {

@@ -18,6 +18,9 @@ const App = () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length > 0) {
           setUrl(tabs[0].url);
+          let rr=tabs[0]
+          
+          localStorage.setItem("url",url)
         }
       });
     } else {
@@ -92,7 +95,7 @@ const App = () => {
     if (start >= 1 && start<=parseInt(percent)) {
       setTimeout(() => {
         setStart(s=>s+1);
-      }, 10);
+      }, 5);
     }
   }, [start]);
   return (
@@ -137,10 +140,8 @@ const App = () => {
               className={`mt-4 p-6 rounded-lg ${statusInfo.color} ${statusInfo.textColor} text-center shadow-lg hover:shadow-xl transition-all duration-300 ease-out`}
             >
               <h2 className="font-semibold text-lg mb-2">{statusInfo.title}</h2>
-              <p className="text-sm mb-4">{statusInfo.description}</p>
-
-              <div className="mt-4">
-                <div className="text-sm font-medium">Confidence Score</div>
+              <div className="mt-2">
+                <div className="text-sm font-medium">{statusInfo.description}</div>
                 <div className="w-full bg-white rounded-full h-3 mt-2 shadow-inner">
                   <div
                     className="h-3 rounded-full transition-all duration-1000 ease-out"
